@@ -48,10 +48,11 @@ workflow FASTQ_TRIM_FASTP_FASTQC {
     ch_trim_reads_merged = Channel.empty()
     ch_fastqc_trim_html  = Channel.empty()
     ch_fastqc_trim_zip   = Channel.empty()
-    if (!val_skip_fastp) {
+    if (!val_skip_fastp) { 
         FASTP (
             ch_reads,
             ch_adapter_fasta,
+            false,
             val_save_trimmed_fail,
             val_save_merged
         )
