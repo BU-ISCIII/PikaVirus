@@ -26,11 +26,6 @@ include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_pika
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-// TODO nf-core: Remove this line if you don't need a FASTA file
-//   This is an example of how to use getGenomeAttribute() to fetch parameters
-//   from igenomes.config using `--genome`
-params.fasta = getGenomeAttribute('fasta')
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     NAMED WORKFLOWS FOR PIPELINE
@@ -40,18 +35,23 @@ params.fasta = getGenomeAttribute('fasta')
 //
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
-workflow NFCORE_PIKAVIRUS {
 
+workflow NFCORE_PIKAVIRUS {
     take:
-    samplesheet // channel: samplesheet read in from --input
+    samplesheet
 
     main:
+
+    ch_versions = Channel.empty()
 
     //
     // WORKFLOW: Run pipeline
     //
     PIKAVIRUS (
-        samplesheet
+        samplesheet,
+        params.kraken2_db,
+        params.vir_red_dir,
+        params.vir_dir_repo
     )
     emit:
     multiqc_report = PIKAVIRUS.out.multiqc_report // channel: /path/to/multiqc_report.html
